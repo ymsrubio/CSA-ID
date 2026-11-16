@@ -1,6 +1,6 @@
 Closes #
 
-<!-- Feature and fix pull requests target `dev`. Only the owner opens release pull requests from `dev` into `main`. -->
+<!-- Pull requests target `main`. Merging deploys the live site. -->
 
 ## Summary
 
@@ -16,7 +16,7 @@ Preview URL:
 
 ## Checklist
 
-- [ ] The pull request targets `dev` (or is a release from `dev` into `main`)
+- [ ] The pull request targets `main`
 - [ ] `npm test` passes
 - [ ] `npm run lint` passes
 - [ ] `npx tsc --noEmit` passes

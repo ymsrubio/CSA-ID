@@ -49,7 +49,7 @@ The app is one Cloudflare Worker on the **Workers Free plan**, built with OpenNe
 
 Change `lib/db/schema.ts`, then run `npm run db:generate` and `npm run db:migrate:local`, and commit the new files in `migrations/`. `npm test` applies every migration to an in-memory D1.
 
-Merging to `main` deploys to the live site, and every preview (including `dev`'s) already runs against the live D1 database. So the owner applies a new migration to the live D1 database **before** the code that needs it merges into `dev`. Write each migration so the code already on `main` and `dev` keeps working after it runs. Mark the migration in the pull request so the owner sees it.
+Merging to `main` deploys to the live site, and every preview already runs against the live D1 database. So the owner applies a new migration to the live D1 database **before** the code that needs it merges into `main`. Write each migration so the code already on `main` keeps working after it runs. Mark the migration in the pull request so the owner sees it.
 
 Live systems belong to the owner: agents never run `npm run db:migrate:remote`, `npm run deploy`, `wrangler deploy`, `wrangler secret put`, or any other `--remote` command.
 
@@ -68,13 +68,13 @@ The last one builds the Worker the way production does; a change can pass `next 
 
 For a change a user can see, also prove it in the running app, locally and on the pull request's preview link. The `verify` skill in [.claude/skills/verify/SKILL.md](.claude/skills/verify/SKILL.md) launches the app, signs in as the local demo User, and drives the dashboard and public page; its `features/` files list what to check per feature. Agents other than Claude Code can read and follow it directly. Put the evidence (screenshots, status messages) in the pull request.
 
-## Branches and releases
+## Branches and deploys
 
-- `dev` is the default branch. Branch from the latest `dev` as `<type>/<short-description>` and open the pull request into `dev`. Never target `main`.
-- Nobody pushes directly to `main` or `dev`. Every change lands through a pull request with passing checks.
-- A release is a pull request from `dev` into `main`, merged with a merge commit (not squash). Only the owner opens and merges it. Merging it deploys to the live site.
-- A hotfix takes the same path, just faster: a `fix/...` branch from `dev`, a pull request into `dev`, then a release pull request into `main`.
-- Cloudflare Workers Builds uploads a preview of every pull request branch and of `dev`, and posts its link on the **Workers Builds: csa-id** check. Put the preview link and the `verify` evidence in the pull request.
+- `main` is the only long-lived branch. Branch from the latest `main` as `<type>/<short-description>` and open the pull request into `main`.
+- Nobody pushes directly to `main`. Every change lands through a pull request with passing checks, squash-merged by the owner.
+- Merging into `main` deploys to the live site. A hotfix is an ordinary `fix/...` pull request into `main`.
+- Rollback is one click: Cloudflare dashboard → **csa-id** → **Deployments** → roll back to an earlier version.
+- Cloudflare Workers Builds uploads a preview of every pull request branch and posts its link on the **Workers Builds: csa-id** check. Put the preview link and the `verify` evidence in the pull request.
 
 ## Previews use the live database
 

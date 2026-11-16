@@ -120,15 +120,15 @@ When other tickets block yours, record the blockers in three places:
 
 ### Branch
 
-`dev` is the default branch. Branch from the latest `dev`. Name the branch `<type>/<short-description>`, with a type from the commit list below:
+`main` is the only long-lived branch. Branch from the latest `main`. Name the branch `<type>/<short-description>`, with a type from the commit list below:
 
 ```bash
-git switch dev
+git switch main
 git pull
 git switch -c fix/dashboard-phone-buttons
 ```
 
-Nobody pushes directly to `dev` or `main`. Every change reaches them through a pull request.
+Nobody pushes directly to `main`. Every change reaches it through a pull request.
 
 ### Commit
 
@@ -163,7 +163,7 @@ npm run db:migrate:local
 
 Commit the new files in `migrations/`. `npm test` applies every migration to an in-memory D1, so the tests run against the new schema.
 
-**Apply a new migration to the live D1 database before the code that needs it merges into `dev`.** Previews of `dev` and of every pull request already run against the live D1 database, and a release to `main` deploys the live site. If the code arrives before the schema, the preview or the live site breaks. Write migrations so that the code already on `main` and `dev` still works after the migration runs.
+**Apply a new migration to the live D1 database before the code that needs it merges into `main`.** Every pull request preview already runs against the live D1 database, and merging into `main` deploys the live site. If the code arrives before the schema, the preview or the live site breaks. Write migrations so that the code already on `main` still works after the migration runs.
 
 Only people with access to the Cloudflare account can change the live database. Ask the repository owner to apply it, or, if you have access:
 
@@ -207,11 +207,11 @@ GitHub Actions runs the same four checks as the **checks** job on every pull req
 
 ### Submit
 
-Open the pull request into `dev`:
+Open the pull request into `main`:
 
 ```bash
 git push -u origin HEAD
-gh pr create --repo ymsrubio/CSA-ID --base dev
+gh pr create --repo ymsrubio/CSA-ID --base main
 ```
 
 The pull request template asks for:
@@ -237,21 +237,13 @@ Give the pull request a Conventional Commits title, because it becomes the commi
 
 ### Review and merge
 
-The repository owner reviews each pull request. Pull requests are squash-merged into `dev`, and the branch is deleted after the merge. After the merge, `dev` gets its own preview.
+The repository owner reviews each pull request and squash-merges it into `main`. The branch is deleted after the merge.
 
-### Releases
+### Deploy and roll back
 
-Only the owner ships to the live site:
+Merging into `main` deploys the Worker to the live site through Cloudflare Workers Builds. A hotfix is an ordinary `fix/...` pull request into `main`.
 
-1. Open a pull request from `dev` into `main`, titled like `chore: release 2026-11-14`, listing the pull requests it ships.
-2. Check `dev`'s preview once more and wait for the **checks** job to pass.
-3. Merge with **Create a merge commit**, not squash, so `dev` and `main` keep the same history.
-
-Merging into `main` deploys the Worker to the live site through Cloudflare Workers Builds.
-
-### Hotfixes
-
-A hotfix takes the same path, just faster. Branch `fix/...` from `dev`, open a pull request into `dev`, check the preview, merge, then open the release pull request from `dev` into `main` right away.
+Rollback is one click: Cloudflare dashboard → **csa-id** → **Deployments** → roll back to an earlier version.
 
 ## Where to read more
 

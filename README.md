@@ -31,12 +31,12 @@ For Google sign-in, the Workers runtime preview, and the checks to run before a 
 
 ## How changes ship
 
-- `dev` is the default branch. Branch from `dev` and open pull requests into `dev`.
+- `main` is the only long-lived branch. Branch from `main` and open pull requests into `main`.
 - GitHub Actions runs the tests, lint, type check and Worker build on every pull request. Each pull request also gets a Cloudflare preview link.
 - Previews share the live database. Test there only with test accounts, and never touch real Profiles.
-- The owner ships `dev` to the live site with a release pull request from `dev` into `main`. Merging to `main` deploys.
+- The owner squash-merges each pull request into `main`, which deploys the live site. Roll back in Cloudflare → csa-id → Deployments.
 
-[CONTRIBUTING.md](CONTRIBUTING.md#open-a-pull-request) has the details, including releases and hotfixes.
+[CONTRIBUTING.md](CONTRIBUTING.md#open-a-pull-request) has the details, including deploys and rollback.
 
 ## Documentation
 
